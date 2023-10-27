@@ -13,7 +13,7 @@ async function exec_payload(ns, server, extra_arg="") {
 
 	ns.tprint(msg)
 	await ns.scp(PAYLOAD_NAME, server.hostname)
-	ns.exec(PAYLOAD_NAME, server.hostname, t, extra_arg)
+	ns.exec(PAYLOAD_NAME, server.hostname, Math.floor(t), extra_arg)
 }
 
 /** @param {NS} ns **/

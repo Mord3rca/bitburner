@@ -52,7 +52,7 @@ export async function main(ns) {
 		/*
 		if(ns.getServerRequiredHackingLevel(server.hostname) <= ns.getHackingLevel()) {
 			ns.tprint("Installing backdoor");
-			await ns.installBackdoor();
+			await ns.singularity.installBackdoor();
 		}
 		*/
 	}
