@@ -2,41 +2,36 @@ import * as s from "lib/server.js"
 
 const PAYLOAD_NAME="payload.js"
 
-async function exec_payload(ns, server, extra_arg="") {
-	let t = ( ns.getServerMaxRam(server.hostname) - ns.getServerUsedRam(server.hostname) ) / ns.getScriptRam(PAYLOAD_NAME)
-	let msg = "Exec payload on " + server.hostname
-	if(extra_arg != "")
-		msg += " with arg: " + extra_arg
+// Have to be >1 or it will only do weaken() call
+const MIN_SEC_MULT=1.2
+// Have to be <1 or it will only do grow() call
+const MAX_MONEY_MULT=0.8
 
-	if(t < 1)
-		return
+async function exec_payload(ns, server, extra_arg) {
+    let t = ( ns.getServerMaxRam(server.hostname) - ns.getServerUsedRam(server.hostname) ) / ns.getScriptRam(PAYLOAD_NAME)
+    if(t < 1)
+        return
 
-	ns.tprint(msg)
-	await ns.scp(PAYLOAD_NAME, server.hostname)
-	ns.exec(PAYLOAD_NAME, server.hostname, Math.floor(t), extra_arg)
+    ns.tprintf("Exec payload on %s", server.hostname)
+    await ns.scp(PAYLOAD_NAME, server.hostname)
+    ns.exec(PAYLOAD_NAME, server.hostname, Math.floor(t), ...extra_arg)
 }
 
 /** @param {NS} ns **/
 export async function main(ns) {
-	let servers = await s.readList(ns)
-	let targets = servers.filter(
-		function(s) {
-			return s.hacking_skill <= ns.getHackingLevel() && s.has_root && s.max_money > 0
-			}
-		)
-	targets.sort(function(a, b){return b.hacking_skill - a.hacking_skill})
-	let owned = servers.filter(
-		function(s) {
-			return s.has_root && s.max_money == 0
-		}
-	)
-	let best = targets[0]
+    let servers = await s.readList(ns)
+    let targets = servers.filter(
+        (srv) => srv.hacking_skill <= ns.getHackingLevel() && srv.has_root && srv.max_money > 0
+    )
+    targets.sort((a, b) => b.max_money - a.max_money)
+    let owned = servers.filter((srv) => srv.has_root && srv.max_money == 0);
+    let best = servers.find((srv) => srv.hostname == ns.args[0]) || targets[0];
 
-	for(let i in targets) {
-		await exec_payload(ns, targets[i])
-	}
-
-	for( let i in owned ) {
-		await exec_payload(ns, owned[i], best.hostname)
-	}
+    targets.concat(owned).forEach(async (i) =>
+        await exec_payload(ns, i, [
+            best.hostname,
+            ns.getServerMinSecurityLevel(best.hostname) * MIN_SEC_MULT,
+            ns.getServerMaxMoney(best.hostname) * MAX_MONEY_MULT
+        ])
+    );
 }

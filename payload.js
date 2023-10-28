@@ -4,18 +4,26 @@
 
 /** @param {NS} ns **/
 export async function main(ns) {
-	var target = ns.args[0] || ns.getHostname();
-	var sec_tresh = ns.getServerMinSecurityLevel(target) + 5;
-	var money_thres = ns.getServerMaxMoney(target) * 0.80;
+    var target = ns.args[0];
+    var sec_tresh = ns.args[1];
+    var money_thres = ns.args[2];
 
-	while(true) {
-		if (ns.getServerSecurityLevel(target) > sec_tresh) {
-			await ns.weaken(target);
-		} else if (ns.getServerMoneyAvailable(target) < money_thres) {
-			await ns.grow(target);
-		}
-		else {
-			await ns.hack(target);
-		}
-	}
+    if (!(target || sec_tresh || money_thres)) {
+        ns.tprint("Can't run, need args: [hostname, sec_tresh, money_thres]");
+    }
+
+    ns.tprint("Executing payload with following config");
+    ns.tprint("    hostname: " + target);
+    ns.tprint("    security: " + sec_tresh);
+    ns.tprint("    money: " + money_thres);
+
+    while(true) {
+        if (ns.getServerSecurityLevel(target) > sec_tresh) {
+            await ns.weaken(target);
+        } else if (ns.getServerMoneyAvailable(target) < money_thres) {
+            await ns.grow(target);
+        } else {
+            await ns.hack(target);
+        }
+    }
 }
