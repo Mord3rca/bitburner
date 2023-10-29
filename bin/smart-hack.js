@@ -2,13 +2,13 @@
 	Utility to hack servers based on skill, program available, ...
 */
 
-import * as server from 'lib/server.js';
+import getServerList from 'lib/server.js';
 
 /** @param {NS} ns **/
 export async function main(ns) {
 	ns.disableLog('ALL');
 
-	let servers = await server.readList(ns);
+	let servers = await getServerList(ns);
 	let maxport = 0;
 	let modified = false;
 	var hackDict = {
