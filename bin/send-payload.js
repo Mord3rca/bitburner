@@ -1,4 +1,4 @@
-import * as s from "lib/server.js"
+import getServerList from 'lib/server.js'
 
 const PAYLOAD_NAME="payload.js"
 
@@ -19,7 +19,7 @@ async function exec_payload(ns, server, extra_arg) {
 
 /** @param {NS} ns **/
 export async function main(ns) {
-    let servers = await s.readList(ns)
+    let servers = await getServerList(ns)
     let targets = servers.filter(
         (srv) => srv.hacking_skill <= ns.getHackingLevel() && srv.has_root && srv.max_money > 0
     )

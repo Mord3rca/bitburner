@@ -4,7 +4,7 @@
         * host (optional)  - All if not set.
 */
 
-import * as server from 'lib/server.js';
+import getServerList from 'lib/server.js';
 
 /** @param {NS} ns **/
 export async function main(ns) {
@@ -12,7 +12,7 @@ export async function main(ns) {
 
     let servers = [ns.args[0]]
     if (!servers[0])
-        servers = (await server.readList(ns)).map((e) => e.hostname);
+        servers = (await getServerList(ns)).map((e) => e.hostname);
 
     servers.forEach((i) => ns.killall(i, true));
 }
