@@ -1,4 +1,4 @@
-import getServerList from 'lib/server.js'
+import {getServerList} from 'lib/server.js'
 
 const PAYLOAD_NAME="payload.js"
 
