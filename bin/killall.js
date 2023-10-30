@@ -4,7 +4,7 @@
         * host (optional)  - All if not set.
 */
 
-import getServerList from 'lib/server.js';
+import {getServerList} from 'lib/server.js';
 
 /** @param {NS} ns **/
 export async function main(ns) {

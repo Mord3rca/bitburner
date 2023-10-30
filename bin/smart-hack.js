@@ -2,7 +2,7 @@
 	Utility to hack servers based on skill, program available, ...
 */
 
-import getServerList from 'lib/server.js';
+import {getServerList, discover} from 'lib/server.js';
 
 /** @param {NS} ns **/
 export async function main(ns) {
@@ -59,6 +59,6 @@ export async function main(ns) {
 
 	if(modified) {
 		ns.tprint("* New entries, regenerating cache...");
-		await server.discover(ns);
+		await discover(ns);
 	}
 }
