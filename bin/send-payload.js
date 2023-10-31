@@ -1,3 +1,4 @@
+import {IniFile} from 'lib/config.js'
 import {getServerList} from 'lib/server.js'
 
 const PAYLOAD_NAME="payload.js"
@@ -19,19 +20,15 @@ async function exec_payload(ns, server, extra_arg) {
 
 /** @param {NS} ns **/
 export async function main(ns) {
-    let servers = await getServerList(ns)
-    let targets = servers.filter(
-        (srv) => srv.hacking_skill <= ns.getHackingLevel() && srv.has_root && srv.max_money > 0
-    )
-    targets.sort((a, b) => b.max_money - a.max_money)
-    let owned = servers.filter((srv) => srv.has_root && srv.max_money == 0);
-    let best = servers.find((srv) => srv.hostname == ns.args[0]) || targets[0];
-
-    targets.concat(owned).forEach(async (i) =>
+    let cfg = new IniFile('/etc/target.txt')
+    cfg.parse(ns)
+    let target = cfg.get('Payload', 'target')
+    let servers = (await getServerList(ns)).filter((s) => s.has_root)
+    for(const i of servers) {
         await exec_payload(ns, i, [
-            best.hostname,
-            ns.getServerMinSecurityLevel(best.hostname) * MIN_SEC_MULT,
-            ns.getServerMaxMoney(best.hostname) * MAX_MONEY_MULT
+            target,
+            ns.getServerMinSecurityLevel(target) * MIN_SEC_MULT,
+            ns.getServerMaxMoney(target) * MAX_MONEY_MULT
         ])
-    );
+    }
 }
