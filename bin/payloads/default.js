@@ -12,11 +12,6 @@ export async function main(ns) {
         ns.tprint("Can't run, need args: [hostname, sec_tresh, money_thres]");
     }
 
-    ns.tprint("Executing payload with following config");
-    ns.tprint("    hostname: " + target);
-    ns.tprint("    security: " + sec_tresh);
-    ns.tprint("    money: " + money_thres);
-
     while(true) {
         if (ns.getServerSecurityLevel(target) > sec_tresh) {
             await ns.weaken(target);
