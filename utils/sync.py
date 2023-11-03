@@ -22,7 +22,7 @@ def sendfile(file: Path) -> None:
 
 def copy_to() -> None:
     for i in Path(args.path).glob("**/*"):
-        if not i.is_dir():
+        if i.suffix in {'.js', '.script', '.txt'}:
             sendfile(i)
 
 
