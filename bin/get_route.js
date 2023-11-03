@@ -1,5 +1,5 @@
-import {getRoute} from 'lib/network.js'
+import {getRoute} from 'lib/network.js';
 
 export async function main(ns) {
-    ns.tprint(await getRoute(ns, ns.args[0]))
+    ns.tprint(await getRoute(ns, ns.args[0]));
 }
