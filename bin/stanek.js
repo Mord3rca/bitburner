@@ -10,7 +10,7 @@ async function charge(stanek, args) {
         if (i.highestCharge >= i.numCharge)
             continue;
         await stanek.chargeFragment(i.x, i.y);
-    };
+    }
 }
 
 async function gridHandler(stanek, args) {
@@ -32,7 +32,7 @@ export async function main(ns) {
     }
 
     if (! ns.stanek.acceptGift()) {
-        ns.tprint("Stanek Gift is not available, aborting..")
+        ns.tprint("Stanek Gift is not available, aborting..");
         return;
     }
 
